@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="applicable-device" content="pc,mobile">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="renderer" content="webkit">
+<meta name="force-rendering" content="webkit">
+<meta name="HandheldFriendly" content="true">
+<meta name="robots" content="index,follow,noodp">
+<title>ArtPlayer</title>
+<script src="/artplayer-plugin-ads.min.js"></script> 
+<script src="/hls.min.js"></script> 
+<script src="/artplayer.min.js"></script>
+<style>
+body, html {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    padding: 0;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: hidden
+}
+.artplayer-app {
+    width: 100%;
+    height: 100%
+}
+</style>
+</head>
+<body>
+<div class="artplayer-app"></div>
+<script>
+function playM3u8(video, url, art) {
+  if (Hls.isSupported()) {
+    if (art.hls)
+      art.hls.destroy()
+    const hls = new Hls()
+    hls.loadSource(url)
+    hls.attachMedia(video)
+    art.hls = hls
+    art.on('destroy', () => hls.destroy())
+  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+    video.src = url
+  } else {
+    art.notice.show = 'Unsupported playback format: m3u8'
+  }
+}
+const urlParams = new URLSearchParams(window.location.search);
+const videoUrl = urlParams.get('url');
+if (!videoUrl) {
+  alert('请传入m3u8视频地址');
+  throw new Error('未传入视频url');
+}
+const art = new Artplayer({
+  container: '.artplayer-app',
+  url: videoUrl,
+  type: 'm3u8',
+  customType: {
+    m3u8: playM3u8,
+  },
+  plugins: [
+    artplayerPluginAds({
+      html: '<img src="https://v4.sogowan.com/20250707/vUaY5q5eE1Om6Xku.gif">',
+      video: '',
+      url: 'https://c0d30jylmzsym.top/api/s/sbd2871f437f.js',
+      playDuration: 5,
+      totalDuration: 10,
+      i18n: {
+        close: '关闭广告',
+        countdown: '%s秒',
+        detail: '查看详情',
+        canBeClosed: '%s秒后可关闭广告',
+      },
+    }),
+  ],
+})
+</script>
+</body>
+</html>
